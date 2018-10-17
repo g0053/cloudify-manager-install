@@ -81,11 +81,12 @@ class PostgresqlClientComponent(BaseComponent):
                          '-s', '/bin/bash',
                          '-c', POSTGRES_USER_COMMENT,
                          '-u', POSTGRES_USER_ID, POSTGRES_USER])
-        except Exception as ex:
-            if 'already exists' not in ex.message:
-                raise ex
-            else:
+        except ProcessExecutionError as ex:
+            # in `useradd`, return 9 means user name is not unique
+            if ex.proc.returncode == 9:
                 logger.info('User postgres already exists')
+            else:
+                raise ex
 
     def _create_postgres_pass_file(self):
         logger.debug('Creating postgresql pgpass file: {0}'

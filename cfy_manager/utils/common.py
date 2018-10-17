@@ -54,7 +54,7 @@ def run(command, retries=0, stdin=b'', ignore_failures=False,
         elif not ignore_failures:
             msg = 'Failed running command: {0} ({1}).'.format(
                 command_str, proc.aggr_stderr)
-            raise ProcessExecutionError(msg)
+            raise ProcessExecutionError(msg, proc)
     return proc
 
 
