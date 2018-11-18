@@ -480,6 +480,7 @@ def install_dependencies():
         'git',
         # Requirements for building the python package
         'python-devel',
+        'gcc'
     ]
     exit_helpfully_on_failure(
         command=install_rpms,
