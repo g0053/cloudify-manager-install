@@ -437,6 +437,8 @@ def retrieve_required_files(edition, installer_path, installer_branch):
 
     for source, destination in [
             ('config.yaml', CONFIG_FILE_DESTINATION),
+            ('packaging/version_info',
+                os.path.join(RPM_BUILDER_BASE, 'version_info')),
             ('packaging/install_rpm.spec', SPEC_FILE)]:
         if installer_path:
             source = os.path.join(installer_path, source)
