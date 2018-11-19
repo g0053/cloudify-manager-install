@@ -73,7 +73,8 @@ class RpmPackageHandler(object):
 def _yum_install(package, package_name=None, disable_all_repos=True):
     package_name = package_name or package
     logger.info('Installing {0}...'.format(package_name))
-    install_cmd = ['yum', 'install', '-y', '--disablerepo=*', package]
+    install_cmd = ['yum', 'install', '-y', '--disablerepo=*',
+                   '--enablerepo=cloudify', package]
     if not disable_all_repos:
         install_cmd.remove('--disablerepo=*')
     sudo(install_cmd)

@@ -1,4 +1,4 @@
-[local]
+[cloudify]
 name=Cloudify Manager local rpeo
 baseurl=file:///opt/cloudify/sources
 enabled=1
