@@ -10,3 +10,12 @@ Packager:       Cloudify Platform Ltd.
 
 Requires: cloudify-management-worker
 Requires: cloudify-rest-service
+
+
+%description
+Cloudify Manager
+
+%build
+%install
+
+%files
