@@ -27,6 +27,7 @@ Cloudify's REST Service.
 %install
 mkdir %{buildroot}/opt
 mkdir -p %{buildroot}/usr/bin
+mkdir -p %{buildroot}/etc/yum.repos.d/
 cp ${RPM_SOURCE_DIR}/build/etc %{buildroot}/etc -fr
 cp ${RPM_SOURCE_DIR}/build/cloudify %{buildroot}/opt/cloudify -fr
 cp ${RPM_SOURCE_DIR}/build/cfy_manager %{buildroot}/usr/bin/cfy_manager
