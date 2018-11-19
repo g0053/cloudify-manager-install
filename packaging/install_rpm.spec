@@ -32,7 +32,7 @@ cp ${RPM_SOURCE_DIR}/build/cloudify %{buildroot}/opt/cloudify -fr
 cp ${RPM_SOURCE_DIR}/build/cfy_manager %{buildroot}/usr/bin/cfy_manager
 
 /bin/createrepo %{buildroot}/opt/cloudify/sources
-cp ${RPM_SOURCE_DIR}/build/localrepo /etc/yum.repos.d/Cloudify-Local.repo
+cp ${RPM_SOURCE_DIR}/build/localrepo %{buildroot}/etc/yum.repos.d/Cloudify-Local.repo
 
 %post
 echo "
