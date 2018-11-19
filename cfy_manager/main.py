@@ -51,6 +51,7 @@ from .exceptions import BootstrapError
 from .constants import INITIAL_INSTALL_FILE
 from .logger import get_logger, setup_console_logger
 from .utils import CFY_UMASK
+from .utils.install import yum_install
 from .utils.files import remove as _remove, remove_temp_files, touch
 from .utils.certificates import (
     create_internal_certs,
@@ -334,6 +335,7 @@ def install(verbose=False,
     validate(components=components)
     set_globals()
 
+    yum_install('cloudify-manager')
     for component in components:
         if not component.skip_installation:
             component.install()

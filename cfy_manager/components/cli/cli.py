@@ -18,7 +18,7 @@ import logging
 from os.path import join, expanduser
 from getpass import getuser
 
-from ..components_constants import SOURCES, SECURITY, MASTER_IP
+from ..components_constants import SECURITY, MASTER_IP
 from ..base_component import BaseComponent
 from ..service_names import CLI, MANAGER, CLUSTER
 from ...config import config
@@ -27,7 +27,6 @@ from ...logger import (get_logger,
                        get_file_handlers_level)
 from ...utils import common
 from ...constants import EXTERNAL_CERT_PATH
-from ...utils.install import yum_install, yum_remove
 
 logger = get_logger(CLI)
 
@@ -36,10 +35,6 @@ class CliComponent(BaseComponent):
 
     def __init__(self, skip_installation):
         super(CliComponent, self).__init__(skip_installation)
-
-    def _install(self):
-        source_url = config[CLI][SOURCES]['cli_source_url']
-        yum_install(source_url)
 
     def _set_colors(self, is_root):
         """
@@ -96,7 +91,6 @@ class CliComponent(BaseComponent):
 
     def install(self):
         logger.notice('Installing Cloudify CLI...')
-        self._install()
         self._configure()
         logger.notice('Cloudify CLI successfully installed')
 
@@ -135,6 +129,4 @@ class CliComponent(BaseComponent):
             else:
                 raise
 
-        logger.notice('Removing Cloudify CLI...')
-        yum_remove('cloudify')
         logger.notice('Cloudify CLI successfully removed')

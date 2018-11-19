@@ -15,15 +15,12 @@
 
 from os.path import join, isfile
 
-from ..components_constants import SOURCES
 from ..base_component import BaseComponent
 from ..service_names import JAVA
 from ... import constants
-from ...config import config
 from ...logger import get_logger
 from ...exceptions import ValidationError
 from ...utils.common import move, mkdir, sudo
-from ...utils.install import yum_install, yum_remove
 from ...utils.files import remove_files, copy_notice, remove_notice
 
 logger = get_logger(JAVA)
@@ -34,10 +31,6 @@ LOG_DIR = join(constants.BASE_LOG_DIR, JAVA)
 class JavaComponent(BaseComponent):
     def __init__(self, skip_installation):
         super(JavaComponent, self).__init__(skip_installation)
-
-    def _install(self):
-        java_source_url = config[JAVA][SOURCES]['java_source_url']
-        yum_install(java_source_url)
 
     def _move_java_log(self):
         mkdir(LOG_DIR)
@@ -60,7 +53,6 @@ class JavaComponent(BaseComponent):
 
     def install(self):
         logger.notice('Installing Java...')
-        self._install()
         self._configure()
         logger.notice('Java successfully installed')
 
@@ -73,5 +65,4 @@ class JavaComponent(BaseComponent):
         logger.notice('Removing Java...')
         remove_notice(JAVA)
         remove_files([LOG_DIR])
-        yum_remove(JAVA)
         logger.notice('Java successfully removed')

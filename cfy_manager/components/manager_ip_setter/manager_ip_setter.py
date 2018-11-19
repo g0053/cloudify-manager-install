@@ -15,14 +15,12 @@
 
 from os.path import join
 
-from ..components_constants import SOURCES
 from ..base_component import BaseComponent
 from ..service_names import MANAGER, MANAGER_IP_SETTER
 from ...config import config
 from ...logger import get_logger
 from ...utils import common
 from ...utils.systemd import systemd
-from ...utils.install import yum_install, yum_remove
 
 
 MANAGER_IP_SETTER_DIR = join('/opt/cloudify', MANAGER_IP_SETTER)
@@ -34,11 +32,6 @@ class ManagerIpSetterComponent(BaseComponent):
     def __init__(self, skip_installation):
         super(ManagerIpSetterComponent, self).__init__(skip_installation)
 
-    def _install(self):
-        sources = config[MANAGER_IP_SETTER][SOURCES]
-        for source in sources.values():
-            yum_install(source)
-
     def _configure(self):
         if config[MANAGER]['set_manager_ip_on_boot']:
             systemd.configure(MANAGER_IP_SETTER)
@@ -47,7 +40,6 @@ class ManagerIpSetterComponent(BaseComponent):
 
     def install(self):
         logger.notice('Installing Manager IP Setter...')
-        self._install()
         self._configure()
         logger.notice('Manager IP Setter successfully installed')
 
@@ -59,6 +51,5 @@ class ManagerIpSetterComponent(BaseComponent):
     def remove(self):
         logger.notice('Removing Manager IP Setter...')
         systemd.remove(MANAGER_IP_SETTER, service_file=False)
-        yum_remove('cloudify-manager-ip-setter')
         common.remove('/opt/cloudify/manager-ip-setter')
         logger.notice('Manager IP Setter successfully removed')

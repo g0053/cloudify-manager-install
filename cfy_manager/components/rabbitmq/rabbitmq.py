@@ -16,7 +16,7 @@
 import json
 from os.path import join
 
-from ..components_constants import SOURCES, CONFIG
+from ..components_constants import CONFIG
 from ..base_component import BaseComponent
 from ..service_names import RABBITMQ
 from ... import constants
@@ -24,7 +24,6 @@ from ...config import config
 from ...logger import get_logger
 from ...exceptions import ValidationError, NetworkError
 from ...utils.systemd import systemd
-from ...utils.install import yum_install, yum_remove
 from ...utils.network import wait_for_port, is_port_open
 from ...utils.common import sudo, remove as remove_file
 
@@ -41,11 +40,6 @@ logger = get_logger(RABBITMQ)
 class RabbitMQComponent(BaseComponent):
     def __init__(self, skip_installation):
         super(RabbitMQComponent, self).__init__(skip_installation)
-
-    def _install(self):
-        sources = config[RABBITMQ][SOURCES]
-        for source in sources.values():
-            yum_install(source)
 
     def _init_service(self):
         logger.info('Initializing RabbitMQ...')
@@ -194,11 +188,9 @@ class RabbitMQComponent(BaseComponent):
 
     def remove(self):
         logger.notice('Removing RabbitMQ...')
-        yum_remove('erlang')
         logger.info('Stopping the Erlang Port Mapper Daemon...')
         sudo(['epmd', '-kill'], ignore_failures=True)
         systemd.remove(RABBITMQ, service_file=False)
-        yum_remove('socat')
         logger.notice('RabbitMQ successfully removed')
 
     def start(self):

@@ -17,7 +17,6 @@ from os.path import join, isfile
 from collections import namedtuple
 
 from ..components_constants import (
-    SOURCES,
     CONFIG,
     PRIVATE_IP,
     PUBLIC_IP,
@@ -34,7 +33,6 @@ from ...exceptions import ValidationError
 from ...utils import common
 from ...utils import certificates
 from ...utils.systemd import systemd
-from ...utils.install import yum_install, yum_remove
 from ...utils.logrotate import set_logrotate, remove_logrotate
 from ...utils.files import remove_files, deploy, copy_notice, remove_notice
 
@@ -72,10 +70,6 @@ class NginxComponent(BaseComponent):
             key_deployed = True
 
         return cert_deployed, key_deployed
-
-    def _install(self):
-        nginx_source_url = config[NGINX][SOURCES]['nginx_source_url']
-        yum_install(nginx_source_url)
 
     def _deploy_unit_override(self):
         logger.debug('Creating systemd unit override...')
@@ -295,7 +289,6 @@ class NginxComponent(BaseComponent):
 
     def install(self):
         logger.notice('Installing NGINX...')
-        self._install()
         self._configure()
         logger.notice('NGINX successfully installed')
 
@@ -315,7 +308,6 @@ class NginxComponent(BaseComponent):
             LOG_DIR,
             UNIT_OVERRIDE_PATH
         ])
-        yum_remove(NGINX)
         logger.notice('NGINX successfully removed')
 
     def start(self):

@@ -16,7 +16,6 @@
 from os.path import join, dirname
 
 from ..components_constants import (
-    SOURCES,
     CONFIG,
     HOME_DIR_KEY,
     LOG_DIR_KEY,
@@ -31,7 +30,6 @@ from ... import constants as const
 from ...utils import common
 from ...utils.files import deploy
 from ...utils.systemd import systemd
-from ...utils.install import yum_install, yum_remove
 
 
 HOME_DIR = '/opt/mgmtworker'
@@ -45,17 +43,6 @@ logger = get_logger(MGMTWORKER)
 class MgmtWorkerComponent(BaseComponent):
     def __init__(self, skip_installation):
         super(MgmtWorkerComponent, self).__init__(skip_installation)
-
-    def _install(self):
-        source_url = config[MGMTWORKER][SOURCES]['mgmtworker_source_url']
-        yum_install(source_url)
-
-        # TODO: Take care of this
-        # Prepare riemann dir. We will change the owner to riemann later,
-        # but the management worker will still need access to it
-        # common.mkdir('/opt/riemann')
-        # utils.chown(CLOUDIFY_USER, CLOUDIFY_GROUP, riemann_dir)
-        # utils.chmod('770', riemann_dir)
 
     def _deploy_mgmtworker_config(self):
         config[MGMTWORKER][HOME_DIR_KEY] = HOME_DIR
@@ -133,7 +120,6 @@ class MgmtWorkerComponent(BaseComponent):
 
     def install(self):
         logger.notice('Installing Management Worker...')
-        self._install()
         self._configure()
         logger.notice('Management Worker successfully installed')
 
@@ -145,7 +131,6 @@ class MgmtWorkerComponent(BaseComponent):
     def remove(self):
         logger.notice('Removing Management Worker...')
         systemd.remove(MGMTWORKER, service_file=False)
-        yum_remove('cloudify-management-worker')
         common.remove('/opt/mgmtworker')
         logger.notice('Management Worker successfully removed')
 

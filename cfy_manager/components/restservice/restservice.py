@@ -41,7 +41,7 @@ from ...logger import get_logger
 from ...exceptions import BootstrapError, FileError, NetworkError
 from ...utils import common
 from ...utils.systemd import systemd
-from ...utils.install import yum_install, yum_remove
+from ...utils.install import yum_install
 from ...utils.network import get_auth_headers, wait_for_port
 from ...utils.files import (
     deploy,
@@ -234,16 +234,10 @@ class RestServiceComponent(BaseComponent):
         """
         Remove all files related to the REST service and uninstall the RPM,
         """
-        yum_remove('cloudify-rest-service')
-        yum_remove('cloudify-agents')
-
         common.remove('/opt/manager')
 
     def install(self):
         logger.notice('Installing Rest Service...')
-        yum_install(config[RESTSERVICE][SOURCES]['restservice_source_url'])
-        yum_install(config[RESTSERVICE][SOURCES]['agents_source_url'])
-
         premium_source_url = config[RESTSERVICE][SOURCES]['premium_source_url']
         try:
             get_local_source_path(premium_source_url)

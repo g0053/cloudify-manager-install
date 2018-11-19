@@ -15,13 +15,10 @@
 
 from os.path import join
 
-from ..components_constants import SOURCES
 from ..base_component import BaseComponent
 from ..service_names import AMQPINFLUX
-from ...config import config
 from ...logger import get_logger
 from ...utils.systemd import systemd
-from ...utils.install import yum_install, yum_remove
 
 logger = get_logger(AMQPINFLUX)
 
@@ -33,10 +30,6 @@ class AmqpInfluxComponent(BaseComponent):
     def __init__(self, skip_installation):
         super(AmqpInfluxComponent, self).__init__(skip_installation)
 
-    def _install(self):
-        source_url = config[AMQPINFLUX][SOURCES]['amqpinflux_source_url']
-        yum_install(source_url)
-
     def _configure(self):
         logger.info('Starting AMQP-Influx Broker Service...')
         systemd.configure(AMQPINFLUX,
@@ -46,7 +39,6 @@ class AmqpInfluxComponent(BaseComponent):
 
     def install(self):
         logger.notice('Installing AMQP-Influx...')
-        self._install()
         self._configure()
         logger.notice('AMQP-Influx successfully installed')
 
@@ -69,5 +61,4 @@ class AmqpInfluxComponent(BaseComponent):
     def remove(self):
         logger.notice('Removing AMQP-Influx...')
         systemd.remove(AMQPINFLUX, service_file=False)
-        yum_remove('cloudify-amqp-influx')
         logger.notice('AMQP-Influx successfully removed')

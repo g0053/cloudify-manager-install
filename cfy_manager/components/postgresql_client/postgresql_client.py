@@ -17,18 +17,12 @@ from os.path import join
 
 from ...exceptions import ProcessExecutionError
 
-from ..components_constants import SOURCES
 from ..base_component import BaseComponent
 from ..service_names import POSTGRESQL_CLIENT
 from ... import constants
 from ...config import config
 from ...logger import get_logger
 from ...utils import common, files
-from ...utils.install import (
-    yum_install,
-    yum_remove,
-    RpmPackageHandler
-)
 
 GROUP_USER_ALREADY_EXISTS_EXIT_CODE = 9
 POSTGRES_USER = POSTGRES_GROUP = 'postgres'
@@ -46,16 +40,6 @@ logger = get_logger(POSTGRESQL_CLIENT)
 class PostgresqlClientComponent(BaseComponent):
     def __init__(self, skip_installation):
         super(PostgresqlClientComponent, self).__init__(skip_installation)
-
-    def _install(self):
-        sources = config[POSTGRESQL_CLIENT][SOURCES]
-
-        logger.debug('Installing PostgreSQL Client libraries...')
-        yum_install(sources['ps_libs_rpm_url'])
-        yum_install(sources['ps_rpm_url'])
-
-        logger.debug('Installing python libs for PostgreSQL...')
-        yum_install(sources['psycopg2_rpm_url'])
 
     def _create_postgres_group(self):
         logger.notice('Creating postgres group')
@@ -117,7 +101,6 @@ class PostgresqlClientComponent(BaseComponent):
 
     def install(self):
         logger.notice('Installing PostgreSQL Client...')
-        self._install()
         self._create_postgres_group()
         self._create_postgres_user()
         self._configure()
@@ -131,12 +114,3 @@ class PostgresqlClientComponent(BaseComponent):
     def remove(self):
         logger.notice('Removing PostgreSQL Client...')
         files.remove_notice(POSTGRESQL_CLIENT)
-        if not RpmPackageHandler.is_package_installed('postgresql95-server'):
-            yum_remove('postgresql95')
-            yum_remove('postgresql95-libs')
-            logger.notice('PostgreSQL successfully removed')
-        else:
-            logger.info(
-                'PostgreSQL Server is installed on the machine, cfy_manager '
-                'remove will wait for dependant components to be removed prior'
-                ' to removing PostgreSQL')

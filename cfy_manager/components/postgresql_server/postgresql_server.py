@@ -18,10 +18,7 @@ import re
 from tempfile import mkstemp
 from os.path import join, isdir, islink
 
-from ..components_constants import (
-    SOURCES,
-    PRIVATE_IP
-)
+from ..components_constants import PRIVATE_IP
 from ..base_component import BaseComponent
 from ..service_names import (
     POSTGRESQL_SERVER,
@@ -32,7 +29,6 @@ from ...config import config
 from ...logger import get_logger
 from ...utils import common, files
 from ...utils.systemd import systemd
-from ...utils.install import yum_install, yum_remove
 
 
 SYSTEMD_SERVICE_NAME = 'postgresql-9.5'
@@ -57,19 +53,6 @@ logger = get_logger(POSTGRESQL_SERVER)
 class PostgresqlServerComponent(BaseComponent):
     def __init__(self, skip_installation):
         super(PostgresqlServerComponent, self).__init__(skip_installation)
-
-    def _install(self):
-        sources = config[POSTGRESQL_SERVER][SOURCES]
-
-        logger.debug('Installing PostgreSQL Server dependencies...')
-        yum_install(sources['libxslt_rpm_url'])
-
-        logger.debug('Installing PostgreSQL Server...')
-        yum_install(sources['ps_libs_rpm_url'])
-        yum_install(sources['ps_rpm_url'])
-        yum_install(sources['ps_contrib_rpm_url'])
-        yum_install(sources['ps_server_rpm_url'])
-        yum_install(sources['ps_devel_rpm_url'])
 
     def _init_postgresql_server(self):
         logger.debug('Initializing PostreSQL Server DATA folder...')
@@ -153,7 +136,6 @@ class PostgresqlServerComponent(BaseComponent):
 
     def install(self):
         logger.notice('Installing PostgreSQL Server...')
-        self._install()
         self._configure()
         logger.notice('PostgreSQL Server successfully installed')
 
@@ -167,8 +149,6 @@ class PostgresqlServerComponent(BaseComponent):
         files.remove_notice(POSTGRESQL_SERVER)
         systemd.remove(SYSTEMD_SERVICE_NAME)
         files.remove_files([PGSQL_LIB_DIR, PGSQL_USR_DIR, LOG_DIR])
-        yum_remove('postgresql95')
-        yum_remove('postgresql95-libs')
         logger.notice('PostgreSQL successfully removed')
 
     def start(self):
