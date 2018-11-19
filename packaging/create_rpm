@@ -28,7 +28,7 @@ EDITIONS = {
     },
 }
 
-RPM_BUILDER_BASE = '/tmp/tmp-install-rpm'
+RPM_BUILDER_BASE = '/tmp/tmp-install-rpm/build'
 BUILD_RPM_SCRIPT = os.path.join(RPM_BUILDER_BASE, 'build_rpm.py')
 SPEC_FILE = os.path.join(RPM_BUILDER_BASE, 'install_rpm.spec')
 
