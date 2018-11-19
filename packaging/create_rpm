@@ -597,13 +597,19 @@ def run_build_command(edition, package_output_dir):
         command=['/usr/bin/python', BUILD_RPM_SCRIPT, SPEC_FILE],
         error='Could not delete build directory.',
     )
-    for rpm_location in glob.glob(os.path.join(RPM_BUILDER_BASE, '*.rpm')):
-        shutil.copy(rpm_location, '/tmp')
+    rpms = glob.glob(os.path.join(RPM_BUILDER_BASE, '*.rpm'))
+    if len(rpms) != 1:
+        raise ValueError('Expected 1 rpm, got {0}: {1}'
+                         .format(len(rpms), rpms))
+    rpm_location = rpms[0]
+    target = os.path.join('/tmp', os.path.basename(rpm_location))
+    shutil.copyfile(rpm_location, target)
     print('Cleaning up build directory.')
     exit_helpfully_on_failure(
         command=['rm', '-rf', RPM_BUILDER_BASE],
         error='Could not delete build directory.',
     )
+    return target
 
 
 def build_package(edition, branch, dev_branch, installer_branch,
