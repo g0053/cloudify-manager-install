@@ -158,7 +158,7 @@ def exit_helpfully_on_failure(command, error,
     else:
         func = subprocess.check_call
     try:
-        result = func(command, shell=shell)
+        result = func(command, shell=shell, env={})
         if return_output:
             # This will put stdout out of order with stderr, but allows us to
             # parse the resulting output if we need to
