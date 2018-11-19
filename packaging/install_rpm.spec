@@ -5,10 +5,10 @@
 %define _source_payload w0.gzdio
 %define _binary_payload w0.gzdio
 
-Name:           cloudify-manager
+Name:           cloudify-manager-install
 Version:        %{CLOUDIFY_VERSION}
 Release:        %{CLOUDIFY_PACKAGE_RELEASE}%{?dist}
-Summary:        Cloudify Manager
+Summary:        Cloudify Manager installer
 Group:          Applications/Multimedia
 License:        Apache 2.0
 URL:            https://github.com/cloudify-cosmo/cloudify-manager-install
@@ -30,6 +30,7 @@ mkdir -p %{buildroot}/usr/bin
 mkdir -p %{buildroot}/etc/yum.repos.d/
 cp ${RPM_SOURCE_DIR}/build/etc/cloudify %{buildroot}/etc/cloudify -fr
 cp ${RPM_SOURCE_DIR}/build/cloudify %{buildroot}/opt/cloudify -fr
+mv ${RPM_SOURCE_DIR}/*.rpm %{buildroot}/opt/cloudify/sources/
 cp ${RPM_SOURCE_DIR}/build/cfy_manager %{buildroot}/usr/bin/cfy_manager
 
 /bin/createrepo %{buildroot}/opt/cloudify/sources

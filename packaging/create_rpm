@@ -33,6 +33,7 @@ EDITIONS = {
 RPM_BUILDER_BASE = '/tmp/tmp-install-rpm/build'
 BUILD_RPM_SCRIPT = os.path.join(RPM_BUILDER_BASE, 'build_rpm.py')
 SPEC_FILE = os.path.join(RPM_BUILDER_BASE, 'install_rpm.spec')
+MANAGER_SPEC_FILE = os.path.join(RPM_BUILDER_BASE, 'manager.spec')
 
 MANAGER_RESOURCES_BASE = os.path.join(
     RPM_BUILDER_BASE,
@@ -443,6 +444,7 @@ def retrieve_required_files(edition, installer_path, installer_branch):
             ('packaging/version_info',
                 os.path.join(RPM_BUILDER_BASE, 'version_info')),
             ('packaging/install_rpm.spec', SPEC_FILE),
+            ('packaging/manager.spec', MANAGER_SPEC_FILE),
             ('packaging/localrepo',
                 os.path.join(RPM_BUILDER_BASE, 'localrepo'))]:
         if installer_path:
@@ -588,6 +590,11 @@ def run_build_command(edition, package_output_dir):
         the created package.
     """
     print_status_update('Creating RPM.')
+
+    exit_helpfully_on_failure(
+        command=['/usr/bin/python', BUILD_RPM_SCRIPT, MANAGER_SPEC_FILE],
+        error='Could not delete build directory.',
+    )
 
     iteration = edition
     print('Using iteration {iteration}.'.format(
