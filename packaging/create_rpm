@@ -604,7 +604,8 @@ def run_build_command(edition, package_output_dir):
         command=['/usr/bin/python', BUILD_RPM_SCRIPT, SPEC_FILE],
         error='Could not delete build directory.',
     )
-    rpms = glob.glob(os.path.join(RPM_BUILDER_BASE, '*.rpm'))
+    rpms = glob.glob(
+        os.path.join(RPM_BUILDER_BASE, 'cloudify-manager-install*.rpm'))
     if len(rpms) != 1:
         raise ValueError('Expected 1 rpm, got {0}: {1}'
                          .format(len(rpms), rpms))
