@@ -13,7 +13,7 @@ from shutil import copyfileobj
 import requests
 
 
-BATCH_SIZE = 100
+BATCH_SIZE = 5
 API_PREFIX = (
     'https://circleci.com/api/v1.1/project/github/'
     '{organization}/{{project}}/'.format(
