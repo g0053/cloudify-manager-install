@@ -102,7 +102,8 @@ def _create_args_dict():
                 config['restservice']['min_available_memory_mb'],
             'failed_logins_before_account_lock':
                 config['restservice']['failed_logins_before_account_lock'],
-            'account_lock_period': config['restservice.account_lock_period'],
+            'account_lock_period':
+                config['restservice']['account_lock_period'],
             'public_ip': config['manager.public_ip'],
             'default_page_size': config['restservice']['default_page_size']
         },
