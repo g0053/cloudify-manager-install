@@ -104,7 +104,7 @@ def _create_args_dict():
                 config['restservice']['failed_logins_before_account_lock'],
             'account_lock_period':
                 config['restservice']['account_lock_period'],
-            'public_ip': config['manager.public_ip'],
+            'public_ip': config['manager']['public_ip'],
             'default_page_size': config['restservice']['default_page_size']
         },
         'rabbitmq_brokers': [
