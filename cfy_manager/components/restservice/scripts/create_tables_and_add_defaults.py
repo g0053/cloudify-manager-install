@@ -17,6 +17,7 @@
 import json
 import argparse
 import logging
+from datetime import datetime
 
 from flask_migrate import upgrade
 
@@ -66,6 +67,39 @@ def _get_amqp_manager():
     )
 
 
+def _insert_config(config):
+    sm = get_storage_manager()
+    for key, value in config.items():
+        inst = models.Config(
+            name=key,
+            value=value,
+            _updater_id=0,
+            updated_at=datetime.now()
+        )
+        sm.put(inst)
+
+
+def _insert_rabbitmq_broker(brokers):
+    sm = get_storage_manager()
+    for broker in brokers:
+        inst = models.RabbitMQBroker(
+            name=broker['name'],
+            params=broker['params']
+        )
+        sm.put(inst)
+
+
+def _insert_ca_cert(cert):
+    sm = get_storage_manager()
+    inst = models.Certificate(
+        name='ca',
+        value=cert,
+        updated_at=datetime.now(),
+        _updater_id=0,
+    )
+    sm.put(inst)
+
+
 def _add_provider_context(context):
     sm = get_storage_manager()
     provider_context = models.ProviderContext(
@@ -93,5 +127,8 @@ if __name__ == '__main__':
     _init_db_tables(script_config['db_migrate_dir'])
     amqp_manager = _get_amqp_manager()
     _add_default_user_and_tenant(amqp_manager, script_config)
+    _insert_config(script_config['config'])
+    _insert_rabbitmq_broker(script_config['rabbitmq_brokers'])
+    _insert_ca_cert(script_config['ca_cert'])
     _add_provider_context(script_config['provider_context'])
     print 'Finished creating bootstrap admin, default tenant and provider ctx'

@@ -78,8 +78,49 @@ def _create_args_dict():
         'provider_context': _get_provider_context(),
         'authorization_file_path': join(REST_HOME_DIR, 'authorization.conf'),
         'db_migrate_dir': join(constants.MANAGER_RESOURCES_HOME, 'cloudify',
-                               'migrations')
+                               'migrations'),
+        'config': {
+            'rest_service_log_path':
+                config['restservice']['log_dir'] +
+                '/cloudify-rest-service.log',
+            'rest_service_log_level': config['restservice']['log']['level'],
+            'ldap_server': config['restservice']['ldap']['server'],
+            'ldap_username': config['restservice']['ldap']['username'],
+            'ldap_password': config['restservice']['ldap']['password'],
+            'ldap_domain': config['restservice']['ldap']['domain'],
+            'ldap_is_active_directory':
+                config['restservice']['ldap']['is_active_directory'],
+            'ldap_dn_extra': config['restservice']['ldap']['dn_extra'],
+            'ldap_timeout': 5.0,
+            'file_server_root': config['manager']['file_server_root'],
+            'file_server_url': config['manager']['file_server_url'],
+            'insecure_endpoints_disabled':
+                config['restservice']['insecure_endpoints_disabled'],
+            'maintenance_folder':
+                config['restservice']['home_dir'] + '/maintenance',
+            'min_available_memory_mb':
+                config['restservice']['min_available_memory_mb'],
+            'failed_logins_before_account_lock':
+                config['restservice']['failed_logins_before_account_lock'],
+            'account_lock_period': config['restservice.account_lock_period'],
+            'public_ip': config['manager.public_ip'],
+            'default_page_size': config['restservice']['default_page_size']
+        },
+        'rabbitmq_brokers': [
+            {
+                'name': 'local',
+                'params': {
+                    'host': config['rabbitmq']['endpoint_ip'],
+                    'management_host':
+                        config['rabbitmq']['management_endpoint_ip'],
+                    'username': config['rabbitmq']['username'],
+                    'password': config['rabbitmq']['password'],
+                }
+            }
+        ],
     }
+    with open(constants.CA_CERT_PATH) as f:
+        args_dict['ca_cert'] = f.read()
     return args_dict
 
 
