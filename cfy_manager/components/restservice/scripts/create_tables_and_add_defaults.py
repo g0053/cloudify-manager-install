@@ -14,9 +14,12 @@
 #  * See the License for the specific language governing permissions and
 #  * limitations under the License.
 
+import atexit
 import json
 import argparse
 import logging
+import tmpfile
+import os
 from datetime import datetime
 
 from flask_migrate import upgrade
@@ -58,12 +61,16 @@ def _add_default_user_and_tenant(amqp_manager, script_config):
     )
 
 
-def _get_amqp_manager():
+def _get_amqp_manager(script_config):
+    with tmpfile.NamedTemporaryFile(delete=False, mode='wb') as f:
+        f.write(script_config['ca_cert'])
+    broker = script_config['rabbitmq_brokers'][0]
+    atexit.register(os.unlink, f.name)
     return AMQPManager(
-        host=config.instance.amqp_management_host,
-        username=config.instance.amqp_username,
-        password=config.instance.amqp_password,
-        verify=config.instance.amqp_ca_path
+        host=broker['management_host'],
+        username=broker['username'],
+        password=broker['password'],
+        verify=f.name
     )
 
 
