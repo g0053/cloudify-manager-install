@@ -132,7 +132,7 @@ if __name__ == '__main__':
     with open(args.config_path, 'r') as f:
         script_config = json.load(f)
     _init_db_tables(script_config['db_migrate_dir'])
-    amqp_manager = _get_amqp_manager()
+    amqp_manager = _get_amqp_manager(script_config)
     _add_default_user_and_tenant(amqp_manager, script_config)
     _insert_config(script_config['config'])
     _insert_rabbitmq_broker(script_config['rabbitmq_brokers'])
