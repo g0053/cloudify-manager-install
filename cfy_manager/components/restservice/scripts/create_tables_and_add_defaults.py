@@ -18,7 +18,7 @@ import atexit
 import json
 import argparse
 import logging
-import tmpfile
+import tempfile
 import os
 from datetime import datetime
 
@@ -62,7 +62,7 @@ def _add_default_user_and_tenant(amqp_manager, script_config):
 
 
 def _get_amqp_manager(script_config):
-    with tmpfile.NamedTemporaryFile(delete=False, mode='wb') as f:
+    with tempfile.NamedTemporaryFile(delete=False, mode='wb') as f:
         f.write(script_config['ca_cert'])
     broker = script_config['rabbitmq_brokers'][0]
     atexit.register(os.unlink, f.name)
